@@ -1,6 +1,6 @@
 # LinxTap
 
-Desktop utility application for Linux.
+Network connectivity testing application for Linux. Connect to TCP servers, test network connectivity, and verify server availability with a simple, user-friendly interface.
 
 ## Supported Linux Distributions
 

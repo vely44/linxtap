@@ -13,7 +13,7 @@ Welcome to LinxTap! This manual will guide you through using the application.
 
 ## Getting Started
 
-LinxTap is a Linux desktop application built with Qt (PySide6). It provides a simple, user-friendly interface for desktop utility functions.
+LinxTap is a Linux desktop application built with Qt (PySide6). It provides a simple, user-friendly interface for connecting to network servers via TCP/IP. You can use it to test network connectivity, verify server availability, or establish connections to remote services.
 
 ### What You'll Need
 
@@ -116,35 +116,61 @@ When you launch LinxTap, you'll see the main application window:
 
 The window contains:
 
-- **Title Bar**: Shows "LinxTap" as the window title
-- **Status Display**: Shows current status and feedback
-- **Action Button**: Click to interact with the application
+- **Title**: Shows "LinxTap" at the top
+- **Connection Settings**: Input fields for IP address and port
+- **Status Display**: Shows connection status (Not connected, Connected, or Error messages)
+- **Connect Button**: Click to connect or disconnect from the server
 
 ### Basic Operations
 
-#### Clicking the Button
+#### Connecting to a Server
 
-1. Look for the "Click Me" button in the center of the window
-2. Click the button with your mouse
-3. The status display will update to show the number of times you've clicked
+1. **Enter IP Address**: Type the IP address of the server you want to connect to
+   - Default: `127.0.0.1` (localhost)
+   - Example: `192.168.1.100`
 
-**Example:**
-- First click: "Button clicked 1 time(s)"
-- Second click: "Button clicked 2 time(s)"
-- And so on...
+2. **Enter Port**: Type the port number
+   - Default: `8080`
+   - Valid range: 1-65535
+
+3. **Click Connect**: Press the "Connect" button to establish the connection
+
+**Status Messages:**
+
+- **Not connected** (Gray): Initial state, no connection established
+- **Connected to [IP:Port]** (Green): Successfully connected to the server
+- **Error messages** (Red): Connection failed with specific error details
+
+#### Disconnecting from a Server
+
+When connected, the "Connect" button changes to "Disconnect":
+
+1. Click the **Disconnect** button
+2. The connection will be closed
+3. Status will show "Disconnected from [IP:Port]"
+
+#### Common Error Messages
+
+- **"Error: IP address and port are required"** - You must fill in both fields
+- **"Error: Port must be a valid number"** - Port contains non-numeric characters
+- **"Error: Port must be between 1 and 65535"** - Port number is out of valid range
+- **"Error: Connection refused"** - Server is not accepting connections on that port
+- **"Error: Connection timeout"** - Server didn't respond within 5 seconds
+- **"Error: Invalid IP address"** - The IP address format is incorrect
 
 #### Window Controls
 
 - **Minimize**: Click the minimize button in the window title bar
 - **Maximize**: Click the maximize button to expand to full screen
 - **Close**: Click the X button or press `Alt+F4` to close the application
-- **Resize**: Drag the window edges or corners to resize (minimum size: 400x300 pixels)
+- **Resize**: Drag the window edges or corners to resize (minimum size: 450x350 pixels)
 
 ### Keyboard Shortcuts
 
 - `Alt+F4` - Close the application
-- `Tab` - Navigate between interface elements
-- `Space` or `Enter` - Activate focused button
+- `Tab` - Navigate between interface elements (IP field → Port field → Connect button)
+- `Enter` - Activate the Connect/Disconnect button when focused
+- `Space` - Activate the Connect/Disconnect button when focused
 
 ## Troubleshooting
 
@@ -222,11 +248,23 @@ Simply delete the LinxTap folder. There are no system files, registry entries, o
 
 ### Where are my settings stored?
 
-Currently, settings are not persisted between sessions. All state is temporary and resets when you close the application.
+Currently, connection settings (IP and port) are not persisted between sessions. All state is temporary and resets when you close the application.
+
+### What happens to my connection when I close the app?
+
+Any active connections are automatically closed when you exit LinxTap. The application cleans up all network resources properly.
+
+### Can I connect to multiple servers at once?
+
+Currently, LinxTap supports one connection at a time. If you try to connect while already connected, it will disconnect from the current server first.
+
+### What is the connection timeout?
+
+LinxTap waits 5 seconds for a server to respond before timing out. This prevents the application from hanging indefinitely.
 
 ### Is my data safe?
 
-LinxTap runs entirely locally on your computer. No data is sent to external servers or the internet.
+LinxTap only establishes TCP connections to the servers you specify. It doesn't send any data automatically. The application is designed for testing connectivity and establishing connections.
 
 ### How do I report bugs or request features?
 
