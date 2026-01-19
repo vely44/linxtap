@@ -1,0 +1,306 @@
+<Window x:Class="LinxTap.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="LinxTap"
+        Height="600" Width="550"
+        MinHeight="600" MinWidth="550"
+        Background="{StaticResource BackgroundBrush}"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Modern TextBox Style -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#2d2d2d"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontFamily" Value="Consolas, Courier New"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="{StaticResource FocusBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ButtonBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="FontFamily" Value="Consolas, Courier New"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="3"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource ButtonHoverBrush}"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#0d5a8f"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Card Frame Style -->
+        <Style x:Key="CardFrame" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="12"/>
+        </Style>
+
+        <!-- Section Title Style -->
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource AccentBrush}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontFamily" Value="Consolas, Courier New"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0"
+                   Text="● LinxTap"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   Foreground="{StaticResource AccentBrush}"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,12"
+                   FontFamily="Consolas, Courier New"/>
+
+        <!-- Connection Settings Card -->
+        <Border Grid.Row="1" Style="{StaticResource CardFrame}" Margin="0,0,0,12">
+            <StackPanel>
+                <!-- IP Input -->
+                <Grid Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="IP"
+                               Foreground="#9cdcfe"
+                               FontWeight="Medium"
+                               VerticalAlignment="Center"
+                               FontFamily="Consolas, Courier New"
+                               FontSize="11"/>
+                    <TextBox x:Name="IpInput"
+                             Grid.Column="1"
+                             Style="{StaticResource ModernTextBox}"
+                             Text="127.0.0.1"/>
+                </Grid>
+
+                <!-- Port Input -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="PORT"
+                               Foreground="#9cdcfe"
+                               FontWeight="Medium"
+                               VerticalAlignment="Center"
+                               FontFamily="Consolas, Courier New"
+                               FontSize="11"/>
+                    <TextBox x:Name="PortInput"
+                             Grid.Column="1"
+                             Style="{StaticResource ModernTextBox}"
+                             Text="8080"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Status Label -->
+        <Border Grid.Row="2"
+                x:Name="StatusBorder"
+                Background="#3c3c3c"
+                CornerRadius="3"
+                Padding="8"
+                Margin="0,0,0,12">
+            <TextBlock x:Name="StatusLabel"
+                       Text="○ Not connected"
+                       HorizontalAlignment="Center"
+                       Foreground="{StaticResource TextMutedBrush}"
+                       FontFamily="Consolas, Courier New"
+                       FontSize="11"/>
+        </Border>
+
+        <!-- Connect Button -->
+        <Button Grid.Row="3"
+                x:Name="ConnectButton"
+                Content="⚡ CONNECT"
+                Style="{StaticResource ModernButton}"
+                Height="36"
+                Margin="0,0,0,12"
+                Click="ConnectButton_Click"/>
+
+        <!-- Remote Device Info (Hidden by default) -->
+        <Border Grid.Row="4"
+                x:Name="RemoteInfoPanel"
+                Style="{StaticResource CardFrame}"
+                Margin="0,0,0,12"
+                Visibility="Collapsed">
+            <StackPanel>
+                <TextBlock Text="▸ REMOTE DEVICE" Style="{StaticResource SectionTitle}" Margin="0,0,0,6"/>
+
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="OS:" Foreground="{StaticResource TextMutedBrush}" FontFamily="Consolas" FontSize="11"/>
+                    <TextBlock x:Name="RemoteOsLabel" Grid.Column="1" Text="N/A" Foreground="{StaticResource TextBrush}" FontWeight="Medium" FontFamily="Consolas" FontSize="11"/>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Type:" Foreground="{StaticResource TextMutedBrush}" FontFamily="Consolas" FontSize="11"/>
+                    <TextBlock x:Name="GatewayLabel" Grid.Column="1" Text="N/A" Foreground="{StaticResource TextBrush}" FontWeight="Medium" FontFamily="Consolas" FontSize="11"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Message Panel (Hidden by default) -->
+        <Border Grid.Row="5"
+                x:Name="MessagePanel"
+                Style="{StaticResource CardFrame}"
+                Margin="0,0,0,12"
+                Visibility="Collapsed">
+            <StackPanel>
+                <!-- Header with Export Button -->
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="▸ MESSAGE LOG" Style="{StaticResource SectionTitle}"/>
+                    <Button x:Name="ExportButton"
+                            Grid.Column="1"
+                            Content="💾 Export"
+                            Background="#3c3c3c"
+                            Foreground="{StaticResource TextBrush}"
+                            BorderThickness="0"
+                            Padding="10,4"
+                            FontSize="9"
+                            FontFamily="Consolas"
+                            Cursor="Hand"
+                            Click="ExportButton_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        CornerRadius="3"
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#505050"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+
+                <!-- Message Log -->
+                <RichTextBox x:Name="MessageLog"
+                             Height="100"
+                             IsReadOnly="True"
+                             Background="#1e1e1e"
+                             Foreground="{StaticResource TextBrush}"
+                             BorderBrush="{StaticResource BorderBrush}"
+                             BorderThickness="1"
+                             FontFamily="Consolas, Courier New"
+                             FontSize="9"
+                             VerticalScrollBarVisibility="Auto"
+                             Margin="0,0,0,6"/>
+
+                <!-- Message Input -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="MessageInput"
+                             Style="{StaticResource ModernTextBox}"
+                             KeyDown="MessageInput_KeyDown"/>
+                    <Button x:Name="SendButton"
+                            Grid.Column="1"
+                            Content="→ Send"
+                            Style="{StaticResource ModernButton}"
+                            Width="70"
+                            Margin="6,0,0,0"
+                            Click="SendButton_Click"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Spacer -->
+        <Border Grid.Row="6"/>
+
+        <!-- Divider -->
+        <Rectangle Grid.Row="7"
+                   Fill="{StaticResource BorderBrush}"
+                   Height="1"
+                   Margin="0,0,0,12"/>
+
+        <!-- Local Device Info -->
+        <Border Grid.Row="8" Style="{StaticResource CardFrame}">
+            <StackPanel>
+                <TextBlock Text="▸ LOCAL DEVICE" Style="{StaticResource SectionTitle}" Margin="0,0,0,6"/>
+
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Host:" Foreground="{StaticResource TextMutedBrush}" FontFamily="Consolas" FontSize="11"/>
+                    <TextBlock x:Name="HostnameLabel" Grid.Column="1" Text="Loading..." Foreground="{StaticResource TextBrush}" FontWeight="Medium" FontFamily="Consolas" FontSize="11"/>
+                </Grid>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="IP:" Foreground="{StaticResource TextMutedBrush}" FontFamily="Consolas" FontSize="11"/>
+                    <TextBlock x:Name="LocalIpLabel" Grid.Column="1" Text="Loading..." Foreground="{StaticResource BlueBrush}" FontWeight="Medium" FontFamily="Consolas" FontSize="11"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

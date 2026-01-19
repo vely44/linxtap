@@ -1,6 +1,6 @@
 # LinxTap
 
-Modern TCP/IP network client for Linux with OS detection and gateway identification.
+Modern TCP/IP network client with OS detection and gateway identification. Available for **Linux** and **Windows**.
 
 ![LinxTap UI](screenshots/linxtap-ui.png)
 
@@ -13,8 +13,25 @@ Modern TCP/IP network client for Linux with OS detection and gateway identificat
 - 📝 Color-coded message log with export
 - 💾 Portable - no installation required
 
+## Platform Support
+
+### 🐧 Linux Version
+- **Language**: Python + PySide6 (Qt)
+- **Size**: ~170MB executable
+- **Distros**: Ubuntu 24.04+, Debian 11+, Fedora 36+, Arch
+- **[Linux Guide →](USER_MANUAL.md)**
+
+### 🪟 Windows Version
+- **Language**: C# + WPF
+- **Size**: ~25-30MB executable
+- **OS**: Windows 10 (1809+) or Windows 11
+- **[Windows Guide →](windows-app/README.md)**
+
+Both versions have **identical UI and functionality** - modern terminal style, same features.
+
 ## Quick Start
 
+### Linux
 ```bash
 # Extract and run
 tar -xzf LinxTap-linux-x64.tar.gz
@@ -22,16 +39,17 @@ cd LinxTap
 ./LinxTap
 ```
 
-No Python or dependencies needed. **[Full guide →](USER_MANUAL.md)**
+### Windows
+```cmd
+# Just double-click
+LinxTap.exe
+```
 
-## System Requirements
-
-- **Linux**: Ubuntu 24.04+, Debian 11+, Fedora 36+, Arch
-- **Arch**: x86_64 (64-bit)
-- **Display**: X11 or Wayland
+No dependencies required for either version!
 
 ## Development
 
+### Linux (Python)
 ```bash
 # Setup
 python -m venv venv
@@ -44,20 +62,37 @@ python main.py
 # Test
 pytest tests/
 
-# Build executable
+# Build
 ./build.sh
+```
+
+### Windows (C#)
+```cmd
+# Build
+cd windows-app
+build.bat
+
+# Or with .NET CLI
+cd windows-app/LinxTap
+dotnet run
 ```
 
 ## Project Structure
 
 ```
-src/
-├── core/          # Connection logic, OS detection
-├── ui/            # Modern terminal-style Qt interface
-└── utils/         # Network utilities (TTL, gateway)
-tests/             # Full test coverage
+linxtap/
+├── src/              # Linux version (Python + Qt)
+│   ├── core/         # Connection logic
+│   ├── ui/           # Modern terminal UI
+│   └── utils/        # Network utilities
+├── tests/            # Python tests
+└── windows-app/      # Windows version (C# + WPF)
+    └── LinxTap/      # WPF project
+        ├── MainWindow.xaml
+        ├── MainWindow.xaml.cs
+        └── NetworkUtils.cs
 ```
 
 ---
 
-**Version 1.0** | Linux only | Python 3.10+ | PySide6
+**Version 1.0** | Linux (Python 3.10+ / Qt) | Windows (C# / WPF)
