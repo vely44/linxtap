@@ -1,6 +1,6 @@
 # LinxTap
 
-Cross-platform desktop utility application for Windows and Linux.
+Desktop utility application for Linux.
 
 ## Quick Start (Pre-compiled Executable)
 
@@ -8,11 +8,9 @@ Cross-platform desktop utility application for Windows and Linux.
 
 1. Download the latest release from the releases page
 2. Extract the archive
-3. Run the executable:
-   - **Linux**: `./LinxTap` (or double-click)
-   - **Windows**: `LinxTap.exe` (or double-click)
+3. Run the executable: `./LinxTap` (or double-click)
 
-No installation or dependencies required!
+No Python installation or dependencies required!
 
 ## Development Setup
 
@@ -26,8 +24,7 @@ No installation or dependencies required!
 ```bash
 # Create virtual environment
 python -m venv venv
-source venv/bin/activate  # Linux
-venv\Scripts\activate     # Windows
+source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -39,7 +36,7 @@ pip install -r requirements.txt
 python main.py
 ```
 
-Or use the convenience script (Linux):
+Or use the convenience script:
 ```bash
 ./run.sh
 ```
@@ -54,24 +51,11 @@ pytest tests/
 
 To create a standalone executable for distribution:
 
-### Linux
-
 ```bash
 ./build.sh
 ```
 
 The executable will be created in `dist/LinxTap/`
-
-### Windows
-
-```cmd
-python -m venv venv
-venv\Scripts\activate
-pip install -r requirements-build.txt
-pyinstaller --clean --noconfirm linxtap.spec
-```
-
-The executable will be created in `dist\LinxTap\`
 
 ### Distribution
 
