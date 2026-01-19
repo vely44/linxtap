@@ -110,7 +110,11 @@ cd /path/to/LinxTap
 
 ### Main Window
 
-When you launch LinxTap, you'll see the main application window with:
+When you launch LinxTap, you'll see the main application window:
+
+![LinxTap UI Screenshot](screenshots/linxtap-ui.png)
+
+The window contains:
 
 - **Title Bar**: Shows "LinxTap" as the window title
 - **Status Display**: Shows current status and feedback
