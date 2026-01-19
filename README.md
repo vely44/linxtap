@@ -2,6 +2,28 @@
 
 Desktop utility application for Linux.
 
+## Supported Linux Distributions
+
+The pre-compiled executable works on most modern Linux distributions with a desktop environment:
+
+**Verified:**
+- ✅ Ubuntu 24.04 and newer
+- ✅ Ubuntu-based distributions (Linux Mint, Pop!_OS, elementary OS)
+
+**Compatible (requires standard system libraries):**
+- Debian 11+ (Bullseye and newer)
+- Fedora 36+
+- openSUSE Leap 15.4+
+- Arch Linux (and derivatives like Manjaro)
+- Any distribution with glibc 2.31+ and Qt system libraries
+
+**System Requirements:**
+- x86_64 architecture (64-bit)
+- X11 or Wayland display server
+- Standard graphics libraries (libEGL, libGL, libxkbcommon, libdbus)
+
+For installation instructions for missing libraries, see [TESTING.md](TESTING.md).
+
 ## Quick Start (Pre-compiled Executable)
 
 **The easiest way to test the application is to use the pre-built executable:**
