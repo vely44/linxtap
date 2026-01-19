@@ -4,7 +4,6 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
     <Version>1.0.0</Version>
     <Authors>LinxTap</Authors>
     <Product>LinxTap</Product>
