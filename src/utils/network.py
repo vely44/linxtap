@@ -2,6 +2,7 @@
 import socket
 import subprocess
 import re
+import platform
 from typing import Optional
 
 
@@ -46,42 +47,87 @@ def get_hostname() -> str:
 def get_default_gateway() -> Optional[str]:
     """
     Get the default gateway IP address.
+    Cross-platform: works on Linux, Windows, and macOS.
     Returns the gateway IP or None if it cannot be determined.
     """
-    try:
-        # Try using ip route command
-        result = subprocess.run(['ip', 'route'],
-                              capture_output=True,
-                              text=True,
-                              timeout=2)
-        if result.returncode == 0:
-            # Look for default route
-            for line in result.stdout.split('\n'):
-                if line.startswith('default'):
-                    # Extract gateway IP
-                    parts = line.split()
-                    if len(parts) >= 3 and parts[1] == 'via':
-                        return parts[2]
-    except Exception:
-        pass
+    system = platform.system()
 
-    # Fallback: try reading /proc/net/route
-    try:
-        with open('/proc/net/route', 'r') as f:
-            lines = f.readlines()
-            for line in lines[1:]:  # Skip header
-                parts = line.split()
-                if parts[1] == '00000000':  # Default route
-                    # Gateway is in hex, reversed byte order
-                    gateway_hex = parts[2]
-                    # Convert hex to IP
-                    gateway_ip = '.'.join([
-                        str(int(gateway_hex[i:i+2], 16))
-                        for i in range(6, -1, -2)
-                    ])
-                    return gateway_ip
-    except Exception:
-        pass
+    # Windows method
+    if system == 'Windows':
+        try:
+            result = subprocess.run(['ipconfig'],
+                                  capture_output=True,
+                                  text=True,
+                                  timeout=2)
+            if result.returncode == 0:
+                # Look for Default Gateway line
+                for line in result.stdout.split('\n'):
+                    if 'Default Gateway' in line or 'Default-Gateway' in line:
+                        # Extract IP address
+                        match = re.search(r'(\d+\.\d+\.\d+\.\d+)', line)
+                        if match:
+                            gateway = match.group(1)
+                            # Filter out empty gateways (0.0.0.0)
+                            if gateway != '0.0.0.0':
+                                return gateway
+        except Exception:
+            pass
+
+        # Alternative Windows method: route print
+        try:
+            result = subprocess.run(['route', 'print', '0.0.0.0'],
+                                  capture_output=True,
+                                  text=True,
+                                  timeout=2)
+            if result.returncode == 0:
+                # Look for 0.0.0.0 route
+                for line in result.stdout.split('\n'):
+                    if '0.0.0.0' in line:
+                        parts = line.split()
+                        # Gateway is typically the 3rd or 4th column
+                        for part in parts:
+                            if re.match(r'\d+\.\d+\.\d+\.\d+', part):
+                                if part != '0.0.0.0' and not part.startswith('127.'):
+                                    return part
+        except Exception:
+            pass
+
+    # Linux/Unix method
+    else:
+        try:
+            # Try using ip route command
+            result = subprocess.run(['ip', 'route'],
+                                  capture_output=True,
+                                  text=True,
+                                  timeout=2)
+            if result.returncode == 0:
+                # Look for default route
+                for line in result.stdout.split('\n'):
+                    if line.startswith('default'):
+                        # Extract gateway IP
+                        parts = line.split()
+                        if len(parts) >= 3 and parts[1] == 'via':
+                            return parts[2]
+        except Exception:
+            pass
+
+        # Fallback: try reading /proc/net/route (Linux only)
+        try:
+            with open('/proc/net/route', 'r') as f:
+                lines = f.readlines()
+                for line in lines[1:]:  # Skip header
+                    parts = line.split()
+                    if parts[1] == '00000000':  # Default route
+                        # Gateway is in hex, reversed byte order
+                        gateway_hex = parts[2]
+                        # Convert hex to IP
+                        gateway_ip = '.'.join([
+                            str(int(gateway_hex[i:i+2], 16))
+                            for i in range(6, -1, -2)
+                        ])
+                        return gateway_ip
+        except Exception:
+            pass
 
     return None
 
@@ -110,6 +156,7 @@ def detect_os_from_ttl(ttl: int) -> str:
 def get_remote_ttl(ip: str, port: int, timeout: float = 2.0) -> Optional[int]:
     """
     Get the TTL value from a remote host by analyzing socket options.
+    Cross-platform: works on Linux, Windows, and macOS.
     Returns TTL value or None if it cannot be determined.
     """
     try:
@@ -128,12 +175,22 @@ def get_remote_ttl(ip: str, port: int, timeout: float = 2.0) -> Optional[int]:
             sock.close()
 
         # Alternative: use ping to get TTL
-        result = subprocess.run(['ping', '-c', '1', '-W', '1', ip],
-                              capture_output=True,
-                              text=True,
-                              timeout=3)
+        system = platform.system()
+        if system == 'Windows':
+            # Windows ping command
+            result = subprocess.run(['ping', '-n', '1', '-w', '1000', ip],
+                                  capture_output=True,
+                                  text=True,
+                                  timeout=3)
+        else:
+            # Linux/Unix ping command
+            result = subprocess.run(['ping', '-c', '1', '-W', '1', ip],
+                                  capture_output=True,
+                                  text=True,
+                                  timeout=3)
+
         if result.returncode == 0:
-            # Parse TTL from ping output
+            # Parse TTL from ping output (works for both Windows and Linux)
             match = re.search(r'ttl=(\d+)', result.stdout.lower())
             if match:
                 return int(match.group(1))
