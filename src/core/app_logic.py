@@ -123,6 +123,81 @@ class AppLogic:
                 pass
             self.socket = None
 
+    def send_message(self, message: str) -> dict:
+        """
+        Send a message via TCP to the connected device.
+        Returns a dict with 'status', 'message', and optionally 'response' keys.
+        """
+        if not self.connected or not self.socket:
+            return {
+                'status': 'error',
+                'message': 'Not connected to any device'
+            }
+
+        if not message:
+            return {
+                'status': 'error',
+                'message': 'Message cannot be empty'
+            }
+
+        try:
+            # Encode and send the message
+            message_bytes = message.encode('utf-8')
+            self.socket.sendall(message_bytes)
+
+            # Try to receive a response (with short timeout)
+            self.socket.settimeout(1.0)
+            try:
+                response = self.socket.recv(4096)
+                if response:
+                    response_text = response.decode('utf-8', errors='replace')
+                    return {
+                        'status': 'success',
+                        'message': f'Sent {len(message_bytes)} bytes',
+                        'bytes_sent': len(message_bytes),
+                        'response': response_text
+                    }
+                else:
+                    return {
+                        'status': 'success',
+                        'message': f'Sent {len(message_bytes)} bytes (no response)',
+                        'bytes_sent': len(message_bytes)
+                    }
+            except socket.timeout:
+                # No response received, but message was sent
+                return {
+                    'status': 'success',
+                    'message': f'Sent {len(message_bytes)} bytes (no response)',
+                    'bytes_sent': len(message_bytes)
+                }
+
+        except BrokenPipeError:
+            self._cleanup_socket()
+            self.connected = False
+            return {
+                'status': 'error',
+                'message': 'Connection broken - device disconnected'
+            }
+        except ConnectionResetError:
+            self._cleanup_socket()
+            self.connected = False
+            return {
+                'status': 'error',
+                'message': 'Connection reset by remote device'
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': f'Failed to send: {str(e)}'
+            }
+        finally:
+            # Restore original timeout
+            if self.socket:
+                try:
+                    self.socket.settimeout(5.0)
+                except:
+                    pass
+
     def __del__(self):
         """Cleanup when object is destroyed"""
         self._cleanup_socket()

@@ -4,8 +4,10 @@ Network connectivity testing application for Linux. Connect to TCP servers, test
 
 **Features:**
 - TCP connection testing with real-time status
+- Send and receive TCP messages with confirmation
 - Automatic OS detection for connected devices (Linux/Windows/Network Device)
 - Gateway (router) identification
+- Color-coded message log with timestamps
 - Local network IP address display
 - Comprehensive error handling and validation
 

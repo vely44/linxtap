@@ -66,3 +66,30 @@ def test_disconnect_logic():
 
     assert result['status'] == 'disconnected'
     assert 'disconnected' in result['message'].lower()
+
+
+def test_send_message_when_not_connected():
+    """Test sending message when not connected"""
+    logic = AppLogic()
+    result = logic.send_message("test message")
+
+    assert result['status'] == 'error'
+    assert 'not connected' in result['message'].lower()
+
+
+def test_send_empty_message():
+    """Test sending empty message"""
+    logic = AppLogic()
+
+    # Simulate connected state with a mock socket
+    import socket as sock
+    logic.connected = True
+    logic.socket = sock.socket(sock.AF_INET, sock.SOCK_STREAM)
+
+    result = logic.send_message("")
+
+    # Clean up
+    logic.socket.close()
+
+    assert result['status'] == 'error'
+    assert 'empty' in result['message'].lower()

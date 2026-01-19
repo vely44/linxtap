@@ -121,6 +121,7 @@ The window contains:
 - **Status Display**: Shows connection status (Not connected, Connected, or Error messages)
 - **Connect Button**: Click to connect or disconnect from the server
 - **Remote Device Information**: (Appears when connected) Shows detected OS and device type
+- **Send Message**: (Appears when connected) Message input and log for TCP communication
 - **Local Device Information**: Shows your device's hostname and local network IP address
 
 ### Basic Operations
@@ -150,6 +151,48 @@ When connected, the "Connect" button changes to "Disconnect":
 1. Click the **Disconnect** button
 2. The connection will be closed
 3. Status will show "Disconnected from [IP:Port]"
+
+#### Sending Messages to Connected Devices
+
+When you successfully connect to a server, a "Send Message" section appears, allowing you to send TCP messages:
+
+**Message Log:**
+- Shows a timestamped log of all sent messages and responses
+- Color-coded for easy reading:
+  - **Blue**: Sent messages
+  - **Green**: Responses from remote device
+  - **Gray**: Confirmations (bytes sent)
+  - **Red**: Errors
+  - **Bold Gray**: System messages (connect/disconnect)
+
+**Sending a Message:**
+1. Type your message in the text input field
+2. Click "Send" button or press Enter
+3. The message is sent via TCP to the connected device
+4. You'll see confirmation showing how many bytes were sent
+5. If the remote device responds, the response appears in the log
+
+**Message Confirmations:**
+- After sending, you'll see: "✓ Sent X bytes"
+- This confirms the message left your device successfully
+- If the remote device sends a response, it will appear as "RESPONSE: [text]"
+- Note: Not all servers send responses; confirmation of sending does not mean the server processed your message
+
+**Example Log:**
+```
+[14:30:15] Connected to 192.168.1.100:8080
+[14:30:20] SENT: Hello, server!
+[14:30:20] ✓ Sent 14 bytes (no response)
+[14:30:25] SENT: GET /status
+[14:30:25] ✓ Sent 11 bytes
+[14:30:25] RESPONSE: Status: OK
+```
+
+**Important Notes:**
+- Messages are sent as UTF-8 encoded text
+- Maximum response size is 4096 bytes
+- Response timeout is 1 second
+- If connection breaks while sending, you'll see an error message
 
 #### Viewing Remote Device Information
 
@@ -208,14 +251,14 @@ At the bottom of the window, you can see information about your local device:
 - **Minimize**: Click the minimize button in the window title bar
 - **Maximize**: Click the maximize button to expand to full screen
 - **Close**: Click the X button or press `Alt+F4` to close the application
-- **Resize**: Drag the window edges or corners to resize (minimum size: 450x500 pixels)
+- **Resize**: Drag the window edges or corners to resize (minimum size: 500x650 pixels)
 
 ### Keyboard Shortcuts
 
 - `Alt+F4` - Close the application
-- `Tab` - Navigate between interface elements (IP field → Port field → Connect button)
-- `Enter` - Activate the Connect/Disconnect button when focused
-- `Space` - Activate the Connect/Disconnect button when focused
+- `Tab` - Navigate between interface elements
+- `Enter` - Send message (when in message input field) or activate focused button
+- `Space` - Activate focused button
 
 ## Troubleshooting
 
@@ -351,6 +394,27 @@ This doesn't affect the connection functionality - it's just informational.
 ### How does LinxTap know if a device is the gateway?
 
 LinxTap reads your system's routing table to find the default gateway IP address, then compares it to the IP you're connecting to. If they match, the device is identified as your gateway (router).
+
+### Can I send binary data or special characters?
+
+Currently, LinxTap sends messages as UTF-8 encoded text. You can send most text and special characters, but binary data is not directly supported. The focus is on text-based protocol testing (HTTP, telnet, etc.).
+
+### What does "Sent X bytes (no response)" mean?
+
+This means your message was successfully sent to the remote device, but the device didn't send any data back within 1 second. This is normal for many servers that don't echo back responses, or for one-way protocols.
+
+### Why don't I see a response from the server?
+
+Several reasons:
+- The server might not send responses for the type of message you sent
+- The server needs a specific protocol format (e.g., HTTP headers)
+- The response timeout (1 second) was too short
+- The server closed the connection
+- The server is designed to only listen, not respond
+
+### What happens if the connection breaks while sending?
+
+If the connection is lost while sending or waiting for a response, you'll see an error message in the log. The UI will update to show "Connection lost" and the message/remote device sections will be hidden.
 
 ### Is my data safe?
 
