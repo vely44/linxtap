@@ -120,6 +120,7 @@ The window contains:
 - **Connection Settings**: Input fields for IP address and port
 - **Status Display**: Shows connection status (Not connected, Connected, or Error messages)
 - **Connect Button**: Click to connect or disconnect from the server
+- **Local Device Information**: Shows your device's hostname and local network IP address
 
 ### Basic Operations
 
@@ -149,6 +150,21 @@ When connected, the "Connect" button changes to "Disconnect":
 2. The connection will be closed
 3. Status will show "Disconnected from [IP:Port]"
 
+#### Viewing Local Device Information
+
+At the bottom of the window, you can see information about your local device:
+
+- **Hostname**: The name of your computer on the network
+- **Local IP**: Your device's IP address on the local network (displayed in blue)
+
+**Why is this useful?**
+- Know your own IP address when setting up server connections
+- Share your IP with others who need to connect to your device
+- Verify you're on the correct network
+- Troubleshoot network connectivity issues
+
+**Note**: If your device has multiple network interfaces (WiFi, Ethernet, VPN), the displayed IP will be the one used for outgoing internet connections.
+
 #### Common Error Messages
 
 - **"Error: IP address and port are required"** - You must fill in both fields
@@ -163,7 +179,7 @@ When connected, the "Connect" button changes to "Disconnect":
 - **Minimize**: Click the minimize button in the window title bar
 - **Maximize**: Click the maximize button to expand to full screen
 - **Close**: Click the X button or press `Alt+F4` to close the application
-- **Resize**: Drag the window edges or corners to resize (minimum size: 450x350 pixels)
+- **Resize**: Drag the window edges or corners to resize (minimum size: 450x450 pixels)
 
 ### Keyboard Shortcuts
 
@@ -261,6 +277,24 @@ Currently, LinxTap supports one connection at a time. If you try to connect whil
 ### What is the connection timeout?
 
 LinxTap waits 5 seconds for a server to respond before timing out. This prevents the application from hanging indefinitely.
+
+### Why does it show my local IP address?
+
+LinxTap displays your local network IP address so you can:
+- Easily share your IP with others who need to connect to your device
+- Verify you're connected to the correct network
+- Know which IP to use when setting up local servers
+
+The IP address shown is automatically detected from your active network interface.
+
+### What if my Local IP shows "Unknown"?
+
+If the local IP shows "Unknown", it means:
+- Your device might not be connected to any network
+- You might be using a complex network setup
+- Network permissions might be restricted
+
+Try connecting to a network (WiFi or Ethernet) and restarting the application.
 
 ### Is my data safe?
 

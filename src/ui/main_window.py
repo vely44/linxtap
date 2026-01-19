@@ -1,7 +1,8 @@
 from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-                               QLabel, QPushButton, QLineEdit, QGroupBox)
+                               QLabel, QPushButton, QLineEdit, QGroupBox, QFrame)
 from PySide6.QtCore import Qt, Slot
 from src.core.app_logic import AppLogic
+from src.utils.network import get_local_ip, get_hostname
 
 
 class MainWindow(QMainWindow):
@@ -12,7 +13,7 @@ class MainWindow(QMainWindow):
 
     def _setup_ui(self):
         self.setWindowTitle("LinxTap")
-        self.setMinimumSize(450, 350)
+        self.setMinimumSize(450, 450)
 
         # Central widget
         central = QWidget()
@@ -71,8 +72,47 @@ class MainWindow(QMainWindow):
         self.connect_button.clicked.connect(self._on_connect_click)
         layout.addWidget(self.connect_button)
 
-        # Add stretch to push everything to the top
+        # Add stretch to push device info to the bottom
         layout.addStretch()
+
+        # Separator line
+        separator = QFrame()
+        separator.setFrameShape(QFrame.HLine)
+        separator.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(separator)
+
+        # Local device information
+        device_info_group = QGroupBox("Local Device Information")
+        device_info_layout = QVBoxLayout()
+
+        # Get local IP and hostname
+        local_ip = get_local_ip()
+        hostname = get_hostname()
+
+        # Hostname display
+        hostname_layout = QHBoxLayout()
+        hostname_label = QLabel("Hostname:")
+        hostname_label.setMinimumWidth(80)
+        hostname_value = QLabel(hostname)
+        hostname_value.setStyleSheet("font-weight: bold;")
+        hostname_layout.addWidget(hostname_label)
+        hostname_layout.addWidget(hostname_value)
+        hostname_layout.addStretch()
+        device_info_layout.addLayout(hostname_layout)
+
+        # Local IP display
+        ip_info_layout = QHBoxLayout()
+        ip_info_label = QLabel("Local IP:")
+        ip_info_label.setMinimumWidth(80)
+        self.local_ip_value = QLabel(local_ip)
+        self.local_ip_value.setStyleSheet("font-weight: bold; color: #0066cc;")
+        ip_info_layout.addWidget(ip_info_label)
+        ip_info_layout.addWidget(self.local_ip_value)
+        ip_info_layout.addStretch()
+        device_info_layout.addLayout(ip_info_layout)
+
+        device_info_group.setLayout(device_info_layout)
+        layout.addWidget(device_info_group)
 
     @Slot()
     def _on_connect_click(self):
