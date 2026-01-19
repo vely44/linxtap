@@ -1,4 +1,5 @@
 import socket
+from src.utils.network import get_remote_ttl, detect_os_from_ttl, is_gateway
 
 
 class AppLogic:
@@ -7,6 +8,8 @@ class AppLogic:
         self.socket = None
         self.current_ip = None
         self.current_port = None
+        self.remote_os = None
+        self.is_gateway_device = False
 
     def connect(self, ip: str, port: str) -> dict:
         """
@@ -48,9 +51,21 @@ class AppLogic:
             self.current_ip = ip
             self.current_port = port_num
 
+            # Detect remote device information
+            self.is_gateway_device = is_gateway(ip)
+
+            # Try to detect OS via TTL
+            ttl = get_remote_ttl(ip, port_num, timeout=2.0)
+            if ttl:
+                self.remote_os = detect_os_from_ttl(ttl)
+            else:
+                self.remote_os = 'Unknown'
+
             return {
                 'status': 'connected',
-                'message': f'Connected to {ip}:{port_num}'
+                'message': f'Connected to {ip}:{port_num}',
+                'remote_os': self.remote_os,
+                'is_gateway': self.is_gateway_device
             }
         except socket.timeout:
             self._cleanup_socket()
@@ -91,6 +106,8 @@ class AppLogic:
         old_connection = f"{self.current_ip}:{self.current_port}" if self.current_ip else "server"
         self.current_ip = None
         self.current_port = None
+        self.remote_os = None
+        self.is_gateway_device = False
 
         return {
             'status': 'disconnected',

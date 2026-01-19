@@ -1,6 +1,13 @@
 # LinxTap
 
-Network connectivity testing application for Linux. Connect to TCP servers, test network connectivity, and verify server availability with a simple, user-friendly interface. Displays your local network IP address for easy reference.
+Network connectivity testing application for Linux. Connect to TCP servers, test network connectivity, and verify server availability with a simple, user-friendly interface.
+
+**Features:**
+- TCP connection testing with real-time status
+- Automatic OS detection for connected devices (Linux/Windows/Network Device)
+- Gateway (router) identification
+- Local network IP address display
+- Comprehensive error handling and validation
 
 ## Supported Linux Distributions
 

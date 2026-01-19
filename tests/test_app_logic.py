@@ -8,6 +8,8 @@ def test_initial_state():
     assert logic.socket is None
     assert logic.current_ip is None
     assert logic.current_port is None
+    assert logic.remote_os is None
+    assert logic.is_gateway_device is False
 
 
 def test_connect_empty_inputs():

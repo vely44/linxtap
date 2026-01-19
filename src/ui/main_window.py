@@ -13,7 +13,7 @@ class MainWindow(QMainWindow):
 
     def _setup_ui(self):
         self.setWindowTitle("LinxTap")
-        self.setMinimumSize(450, 450)
+        self.setMinimumSize(450, 500)
 
         # Central widget
         central = QWidget()
@@ -72,6 +72,36 @@ class MainWindow(QMainWindow):
         self.connect_button.clicked.connect(self._on_connect_click)
         layout.addWidget(self.connect_button)
 
+        # Remote device information (hidden by default)
+        self.remote_info_group = QGroupBox("Remote Device Information")
+        remote_info_layout = QVBoxLayout()
+
+        # Remote OS display
+        remote_os_layout = QHBoxLayout()
+        remote_os_label = QLabel("Detected OS:")
+        remote_os_label.setMinimumWidth(100)
+        self.remote_os_value = QLabel("N/A")
+        self.remote_os_value.setStyleSheet("font-weight: bold;")
+        remote_os_layout.addWidget(remote_os_label)
+        remote_os_layout.addWidget(self.remote_os_value)
+        remote_os_layout.addStretch()
+        remote_info_layout.addLayout(remote_os_layout)
+
+        # Gateway status display
+        gateway_layout = QHBoxLayout()
+        gateway_label = QLabel("Device Type:")
+        gateway_label.setMinimumWidth(100)
+        self.gateway_value = QLabel("N/A")
+        self.gateway_value.setStyleSheet("font-weight: bold;")
+        gateway_layout.addWidget(gateway_label)
+        gateway_layout.addWidget(self.gateway_value)
+        gateway_layout.addStretch()
+        remote_info_layout.addLayout(gateway_layout)
+
+        self.remote_info_group.setLayout(remote_info_layout)
+        layout.addWidget(self.remote_info_group)
+        self.remote_info_group.hide()  # Hidden by default
+
         # Add stretch to push device info to the bottom
         layout.addStretch()
 
@@ -127,8 +157,31 @@ class MainWindow(QMainWindow):
         if result['status'] == 'connected':
             self.status_label.setStyleSheet("padding: 10px; background-color: #d4edda; color: #155724; border-radius: 5px;")
             self.connect_button.setText("Disconnect")
+
+            # Show and update remote device information
+            remote_os = result.get('remote_os', 'Unknown')
+            is_gateway = result.get('is_gateway', False)
+
+            self.remote_os_value.setText(remote_os)
+
+            if is_gateway:
+                self.gateway_value.setText("Gateway (Router)")
+                self.gateway_value.setStyleSheet("font-weight: bold; color: #ff6600;")
+            else:
+                self.gateway_value.setText("Network Device")
+                self.gateway_value.setStyleSheet("font-weight: bold;")
+
+            self.remote_info_group.show()
+
         elif result['status'] == 'disconnected':
             self.status_label.setStyleSheet("padding: 10px; background-color: #f0f0f0; border-radius: 5px;")
             self.connect_button.setText("Connect")
+
+            # Hide remote device information
+            self.remote_info_group.hide()
+
         elif result['status'] == 'error':
             self.status_label.setStyleSheet("padding: 10px; background-color: #f8d7da; color: #721c24; border-radius: 5px;")
+
+            # Hide remote device information on error
+            self.remote_info_group.hide()

@@ -120,6 +120,7 @@ The window contains:
 - **Connection Settings**: Input fields for IP address and port
 - **Status Display**: Shows connection status (Not connected, Connected, or Error messages)
 - **Connect Button**: Click to connect or disconnect from the server
+- **Remote Device Information**: (Appears when connected) Shows detected OS and device type
 - **Local Device Information**: Shows your device's hostname and local network IP address
 
 ### Basic Operations
@@ -150,6 +151,34 @@ When connected, the "Connect" button changes to "Disconnect":
 2. The connection will be closed
 3. Status will show "Disconnected from [IP:Port]"
 
+#### Viewing Remote Device Information
+
+When you successfully connect to a server, a "Remote Device Information" section appears showing:
+
+- **Detected OS**: The operating system of the remote device
+  - Linux/Unix
+  - Windows
+  - Cisco/Network Device
+  - Unknown (if detection fails)
+
+- **Device Type**: Whether the device is your gateway or a regular network device
+  - **Gateway (Router)** (displayed in orange): The device is your default gateway/router
+  - **Network Device**: Any other device on the network
+
+**How does OS detection work?**
+
+LinxTap uses TTL (Time To Live) analysis to detect the remote operating system:
+- Linux/Unix systems typically use TTL 64
+- Windows systems typically use TTL 128
+- Network devices typically use TTL 255
+
+**Note**: OS detection is a best-guess based on TTL values and may not always be 100% accurate, especially if the device is behind NAT or uses custom TTL values.
+
+**Why is gateway detection useful?**
+- Quickly identify if you're connecting to your router
+- Useful for network diagnostics and troubleshooting
+- Helps understand your network topology
+
 #### Viewing Local Device Information
 
 At the bottom of the window, you can see information about your local device:
@@ -179,7 +208,7 @@ At the bottom of the window, you can see information about your local device:
 - **Minimize**: Click the minimize button in the window title bar
 - **Maximize**: Click the maximize button to expand to full screen
 - **Close**: Click the X button or press `Alt+F4` to close the application
-- **Resize**: Drag the window edges or corners to resize (minimum size: 450x450 pixels)
+- **Resize**: Drag the window edges or corners to resize (minimum size: 450x500 pixels)
 
 ### Keyboard Shortcuts
 
@@ -295,6 +324,33 @@ If the local IP shows "Unknown", it means:
 - Network permissions might be restricted
 
 Try connecting to a network (WiFi or Ethernet) and restarting the application.
+
+### How accurate is the OS detection?
+
+OS detection is based on TTL (Time To Live) values and provides a best-guess estimate. It's generally accurate for:
+- Direct connections on the same network
+- Standard operating systems with default TTL values
+
+It may be less accurate when:
+- The device is behind NAT or multiple routers (TTL decreases)
+- The remote system uses custom TTL values
+- VPNs or proxies are involved
+
+Think of it as a helpful hint rather than a definitive identification.
+
+### What if the OS shows "Unknown"?
+
+If the OS detection shows "Unknown", it could mean:
+- The TTL value couldn't be determined
+- The remote device uses an uncommon TTL value
+- Network conditions prevented TTL detection
+- The device uses custom network configurations
+
+This doesn't affect the connection functionality - it's just informational.
+
+### How does LinxTap know if a device is the gateway?
+
+LinxTap reads your system's routing table to find the default gateway IP address, then compares it to the IP you're connecting to. If they match, the device is identified as your gateway (router).
 
 ### Is my data safe?
 
