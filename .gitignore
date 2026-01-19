@@ -25,3 +25,7 @@ dist/
 # OS
 .DS_Store
 Thumbs.db
+
+# Screenshot generation scripts (utilities)
+capture_screenshot.sh
+generate_screenshot.py
