@@ -34,6 +34,8 @@ For installation instructions for missing libraries, see [TESTING.md](TESTING.md
 
 No Python installation or dependencies required!
 
+📖 **For detailed usage instructions, see the [User Manual](USER_MANUAL.md)**
+
 ## Development Setup
 
 ### Requirements
