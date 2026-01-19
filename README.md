@@ -29,23 +29,25 @@ Modern TCP/IP network client with OS detection and gateway identification. Avail
 
 Both versions have **identical UI and functionality** - modern terminal style, same features.
 
-## Quick Start
+## 📥 Download Pre-Built Executables
 
-### Linux
+### 🪟 Windows - Ready to Run!
+**[→ Click here to download LinxTap.exe](https://github.com/vely44/linxtap/actions)**
+
+1. Click on the latest "Build Windows Executable" workflow (green ✓)
+2. Scroll down to "Artifacts"
+3. Download "LinxTap-Windows"
+4. Extract and **double-click `LinxTap.exe`** - Done! 🎉
+
+**No .NET installation needed!** Just download and run.
+
+### 🐧 Linux
 ```bash
-# Extract and run
-tar -xzf LinxTap-linux-x64.tar.gz
-cd LinxTap
-./LinxTap
+./build.sh
+./dist/LinxTap/LinxTap
 ```
 
-### Windows
-```cmd
-# Just double-click
-LinxTap.exe
-```
-
-No dependencies required for either version!
+**[📖 Full download instructions →](DOWNLOAD.md)**
 
 ## Development
 

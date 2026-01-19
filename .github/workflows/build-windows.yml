@@ -1,0 +1,51 @@
+name: Build Windows Executable
+
+on:
+  push:
+    branches: [ claude/windows-support-XMEln, main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore windows-app/LinxTap/LinxTap.csproj
+
+    - name: Build
+      run: dotnet build windows-app/LinxTap/LinxTap.csproj --configuration Release --no-restore
+
+    - name: Publish
+      run: dotnet publish windows-app/LinxTap/LinxTap.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishTrimmed=false -o ./publish
+
+    - name: Get file size
+      run: |
+        $fileSize = (Get-Item ./publish/LinxTap.exe).Length
+        $fileSizeMB = [math]::Round($fileSize / 1MB, 2)
+        echo "File size: $fileSizeMB MB"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: LinxTap-Windows
+        path: ./publish/LinxTap.exe
+        retention-days: 90
+
+    - name: Create Release (on tag)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ./publish/LinxTap.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
